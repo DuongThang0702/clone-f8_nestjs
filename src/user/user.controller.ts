@@ -1,4 +1,7 @@
 import { Controller } from '@nestjs/common';
+import { Routes } from 'src/utils/contants';
 
-@Controller('user')
-export class UserController {}
+@Controller(Routes.USER)
+export class UserController {
+  constructor() {}
+}
