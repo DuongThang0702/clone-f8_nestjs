@@ -4,8 +4,8 @@ import { UserDetail } from 'src/utils/types';
 export interface IUserService {
   find(): Promise<UserEntity[]>;
   findById(id: number): Promise<UserEntity>;
-  update(): Promise<boolean>;
+  update(payload: UserEntity, refresh_token: string): Promise<UserEntity>;
   create(payload: UserDetail): Promise<UserEntity>;
   delete(id: number): Promise<boolean>;
-  test(): any;
+  findOneByEmail(email: string): Promise<UserEntity>;
 }

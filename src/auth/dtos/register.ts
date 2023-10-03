@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
 export class RegisterDto {
@@ -15,4 +15,36 @@ export class RegisterDto {
   @Expose()
   @IsNotEmpty()
   fullname: string;
+}
+
+export class RegisterSuccess {
+  @Expose()
+  email: string;
+
+  @Expose()
+  id: string;
+
+  @Expose()
+  fullname: string;
+
+  @Exclude()
+  password: string;
+
+  @Exclude()
+  role: string;
+
+  @Exclude()
+  refresh_token: string;
+
+  @Exclude()
+  is_blocked: boolean;
+
+  @Exclude()
+  createdAt: string;
+
+  @Exclude()
+  deletedAt: string;
+
+  @Exclude()
+  updatedAt: string;
 }

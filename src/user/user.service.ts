@@ -13,20 +13,35 @@ export class UserService implements IUserService {
     private readonly userRepo: Repository<UserEntity>,
   ) {}
 
-  test() {
-    return 'ok';
-  }
   async find(): Promise<UserEntity[]> {
     return await this.userRepo.find();
   }
+
   async findById(id: number): Promise<UserEntity> {
     const user = await this.userRepo.findOneBy({ id });
     if (user) return user;
     else throw new HttpException('user notfound', HttpStatus.BAD_REQUEST);
   }
-  update(): Promise<any> {
-    throw new Error('Method not implemented.');
+
+  async findOneByEmail(email: string): Promise<UserEntity> {
+    const user = await this.userRepo.findOneBy({ email });
+    if (user) return user;
+    else throw new HttpException('email not found', HttpStatus.BAD_REQUEST);
   }
+
+  async update(
+    userData: UserEntity,
+    refresh_token: string,
+  ): Promise<UserEntity> {
+    const user = await this.userRepo.findOneBy({ id: userData.id });
+    if (!user)
+      throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+    else {
+      user.refresh_token = refresh_token;
+      return await this.userRepo.save(user);
+    }
+  }
+
   async create(payload: UserDetail): Promise<UserEntity> {
     const existingUser = await this.userRepo.findOneBy({
       email: payload.email,
@@ -38,6 +53,7 @@ export class UserService implements IUserService {
     const response = await this.userRepo.save(user);
     return response;
   }
+
   async delete(id: number): Promise<any> {
     const user = await this.userRepo.findOneBy({ id });
     if (user) {
