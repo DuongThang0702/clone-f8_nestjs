@@ -25,14 +25,12 @@ import {
 import { IAuthService } from './interface';
 import { JwtAuthGuard } from './guards';
 import { AuthenticatedRequest } from 'src/utils/types';
-import { ConfigService } from '@nestjs/config';
 
 @Controller(Routes.AUTH)
 export class AuthController {
   constructor(
     @Inject(Services.USER_SERVICE) private userServices: IUserService,
     @Inject(Services.AUTH_SERVICE) private authServices: IAuthService,
-    private config: ConfigService,
   ) {}
 
   @Post('register')
