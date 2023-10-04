@@ -1,8 +1,17 @@
+import { UserEntity } from 'src/utils/entity/user.entity';
 import { AuthenticatedDecode, UserLogin } from 'src/utils/types';
 
 export interface IAuthService {
   login(
     payload: UserLogin,
   ): Promise<{ access_token: string; refresh_token: string }>;
-  getCurrent(userDecode: AuthenticatedDecode): Promise<any>;
+  logout(
+    userDecode: AuthenticatedDecode,
+    refresh_token: string,
+  ): Promise<boolean>;
+  getCurrent(userDecode: AuthenticatedDecode): Promise<UserEntity>;
+  refreshToken(
+    userDecode: AuthenticatedDecode,
+    refresh_token: string,
+  ): Promise<{ access_token: string }>;
 }

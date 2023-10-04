@@ -2,6 +2,9 @@ import { Exclude, Expose } from 'class-transformer';
 
 export class CurrentDto {
   @Expose()
+  id: string;
+
+  @Expose()
   email: string;
 
   @Exclude()
@@ -13,7 +16,7 @@ export class CurrentDto {
   @Expose()
   is_blocked: boolean;
 
-  @Expose()
+  @Exclude()
   refresh_token: string;
 
   @Expose()

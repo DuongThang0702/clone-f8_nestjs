@@ -23,8 +23,8 @@ export class UserService implements IUserService {
     else throw new HttpException('user notfound', HttpStatus.BAD_REQUEST);
   }
 
-  async findOneByEmail(email: string): Promise<UserEntity> {
-    const user = await this.userRepo.findOneBy({ email });
+  async findOneBy(data: object): Promise<UserEntity> {
+    const user = await this.userRepo.findOneBy({ ...data });
     if (user) return user;
     else throw new HttpException('email not found', HttpStatus.BAD_REQUEST);
   }
@@ -33,13 +33,8 @@ export class UserService implements IUserService {
     userData: UserEntity,
     refresh_token: string,
   ): Promise<UserEntity> {
-    const user = await this.userRepo.findOneBy({ id: userData.id });
-    if (!user)
-      throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
-    else {
-      user.refresh_token = refresh_token;
-      return await this.userRepo.save(user);
-    }
+    userData.refresh_token = refresh_token;
+    return await this.userRepo.save(userData);
   }
 
   async create(payload: UserDetail): Promise<UserEntity> {

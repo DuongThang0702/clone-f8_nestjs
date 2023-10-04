@@ -7,5 +7,5 @@ export interface IUserService {
   update(payload: UserEntity, refresh_token: string): Promise<UserEntity>;
   create(payload: UserDetail): Promise<UserEntity>;
   delete(id: number): Promise<boolean>;
-  findOneByEmail(email: string): Promise<UserEntity>;
+  findOneBy(data: object): Promise<UserEntity>;
 }
