@@ -1,11 +1,11 @@
-import { UserEntity } from 'src/utils/entity/user.entity';
+import { User, UserDocument } from 'src/utils/schema/user.schema';
 import { UserDetail } from 'src/utils/types';
 
 export interface IUserService {
-  find(): Promise<UserEntity[]>;
-  findById(id: number): Promise<UserEntity>;
-  update(payload: UserEntity, refresh_token: string): Promise<UserEntity>;
-  create(payload: UserDetail): Promise<UserEntity>;
-  delete(id: number): Promise<boolean>;
-  findOneBy(data: object): Promise<UserEntity>;
+  find(): Promise<UserDocument[]>;
+  findById(id: string): Promise<UserDocument>;
+  update(payload: UserDocument, refresh_token: string): Promise<UserDocument>;
+  create(payload: UserDetail): Promise<User>;
+  delete(id: string): Promise<boolean>;
+  findOneBy(data: object): Promise<UserDocument>;
 }

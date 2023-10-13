@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { Providers, Services } from 'src/utils/contants';
-import { DataSource } from 'typeorm';
-import { UserEntity } from 'src/utils/entity/user.entity';
+import { User, UserSchema } from 'src/utils/schema/user.schema';
 import { DatabaseModule } from 'src/database/database.module';
+import { Connection } from 'mongoose';
 
 @Module({
   imports: [DatabaseModule],
@@ -16,8 +16,8 @@ import { DatabaseModule } from 'src/database/database.module';
     },
     {
       provide: Providers.USER_REPOSITORY,
-      useFactory: (dataSource: DataSource) =>
-        dataSource.getRepository(UserEntity),
+      useFactory: (connection: Connection) =>
+        connection.model(User.name, UserSchema),
       inject: [`${Providers.DATA_SOURCE}`],
     },
   ],

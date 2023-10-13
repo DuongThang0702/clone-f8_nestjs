@@ -1,59 +1,59 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { UserEntity } from 'src/utils/entity/user.entity';
-import { Repository } from 'typeorm';
+import { User, UserDocument } from 'src/utils/schema/user.schema';
 import { IUserService } from './interface';
 import { UserDetail } from 'src/utils/types';
 import { hashSomthing } from 'src/utils/helper';
 import { Providers } from 'src/utils/contants';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject(Providers.USER_REPOSITORY)
-    private readonly userRepo: Repository<UserEntity>,
+    private readonly userRepo: Model<User>,
   ) {}
 
-  async find(): Promise<UserEntity[]> {
+  async find(): Promise<UserDocument[]> {
     return await this.userRepo.find();
   }
 
-  async findById(id: number): Promise<UserEntity> {
-    const user = await this.userRepo.findOneBy({ id });
+  async findById(id: string): Promise<UserDocument> {
+    const user = await this.userRepo.findById(id);
     if (user) return user;
     else throw new HttpException('user notfound', HttpStatus.BAD_REQUEST);
   }
 
-  async findOneBy(data: object): Promise<UserEntity> {
-    const user = await this.userRepo.findOneBy({ ...data });
+  async findOneBy(data: object): Promise<UserDocument> {
+    const user = await this.userRepo.findOne({ ...data });
     if (user) return user;
     else throw new HttpException('email not found', HttpStatus.BAD_REQUEST);
   }
 
-  async update(
-    userData: UserEntity,
-    refresh_token: string,
-  ): Promise<UserEntity> {
+  async update(userData: User, refresh_token: string): Promise<UserDocument> {
     userData.refresh_token = refresh_token;
-    return await this.userRepo.save(userData);
+    return await this.userRepo.findByIdAndUpdate(
+      { _id: userData },
+      { refresh_token },
+    );
   }
 
-  async create(payload: UserDetail): Promise<UserEntity> {
-    const existingUser = await this.userRepo.findOneBy({
+  async create(payload: UserDetail): Promise<User> {
+    const existingUser = await this.userRepo.findOne({
       email: payload.email,
     });
     if (existingUser)
       throw new HttpException('user already existed', HttpStatus.BAD_REQUEST);
-    const hashPassword = await hashSomthing(payload.password);
-    const user = this.userRepo.create({ ...payload, password: hashPassword });
-    const response = await this.userRepo.save(user);
-    return response;
+    const password = await hashSomthing(payload.password);
+    const newUser = new this.userRepo({ ...payload, password: password });
+    return newUser.save();
   }
 
-  async delete(id: number): Promise<any> {
-    const user = await this.userRepo.findOneBy({ id });
-    if (user) {
-      await this.userRepo.delete(user);
-      throw new HttpException('deleted successfully', HttpStatus.OK);
-    } else throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+  async delete(id: string): Promise<any> {
+    const user = await this.userRepo.findByIdAndDelete({ id });
+    return user;
+    // if (user) {
+    //   await this.userRepo.find(user);
+    //   throw new HttpException('deleted successfully', HttpStatus.OK);
+    // } else throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
   }
 }

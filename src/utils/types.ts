@@ -10,7 +10,7 @@ export type UserLogin = {
 };
 
 export type AuthenticatedDecode = {
-  id: number;
+  _id: string;
   email: string;
   fullname: string;
   role: string;

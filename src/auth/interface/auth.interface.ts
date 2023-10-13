@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/utils/entity/user.entity';
+import { User } from 'src/utils/schema';
 import { AuthenticatedDecode, UserLogin } from 'src/utils/types';
 
 export interface IAuthService {
@@ -9,7 +9,7 @@ export interface IAuthService {
     userDecode: AuthenticatedDecode,
     refresh_token: string,
   ): Promise<boolean>;
-  getCurrent(userDecode: AuthenticatedDecode): Promise<UserEntity>;
+  getCurrent(userDecode: AuthenticatedDecode): Promise<User>;
   refreshToken(
     userDecode: AuthenticatedDecode,
     refresh_token: string,

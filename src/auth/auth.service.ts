@@ -16,7 +16,7 @@ export class AuthService implements IAuthService {
     userDecode: AuthenticatedDecode,
     rf: string,
   ): Promise<{ access_token: string }> {
-    const user = await this.userServices.findById(userDecode.id);
+    const user = await this.userServices.findById(userDecode._id);
     if (!user)
       throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
     else {
@@ -24,15 +24,7 @@ export class AuthService implements IAuthService {
       if (!matchrf)
         throw new HttpException('invalid token', HttpStatus.UNAUTHORIZED);
       else {
-        const {
-          password,
-          is_blocked,
-          createdAt,
-          deletedAt,
-          refresh_token,
-          updatedAt,
-          ...other
-        } = user;
+        const { password, is_blocked, refresh_token, ...other } = user;
         const access_token = await this.generateAccessToken(other);
         return { access_token };
       }
@@ -51,17 +43,9 @@ export class AuthService implements IAuthService {
     if (!checkPassword)
       throw new HttpException('wrong password', HttpStatus.BAD_REQUEST);
 
-    const {
-      password,
-      is_blocked,
-      createdAt,
-      deletedAt,
-      refresh_token,
-      updatedAt,
-      ...other
-    } = user;
+    const { password, is_blocked, refresh_token, ...other } = user;
     const accessToken = await this.generateAccessToken(other);
-    const refreshToken = await this.generateAccessToken({ id: other.id });
+    const refreshToken = await this.generateRefreshToken({ id: other._id });
     await this.userServices.update(user, await hashSomthing(refreshToken));
     return {
       access_token: `Bearer ${accessToken}`,
@@ -70,7 +54,7 @@ export class AuthService implements IAuthService {
   }
 
   async logout(userDecode: AuthenticatedDecode, refresh_token: string) {
-    const user = await this.userServices.findById(userDecode.id);
+    const user = await this.userServices.findById(userDecode._id);
     if (!user)
       throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
     else {
@@ -87,7 +71,7 @@ export class AuthService implements IAuthService {
   }
 
   async getCurrent(userDecode: AuthenticatedDecode) {
-    const user = await this.userServices.findById(userDecode.id);
+    const user = await this.userServices.findById(userDecode._id);
     if (!user)
       throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
     else return user;
