@@ -1061,6 +1061,13 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.3.tgz#bbe64987e0eb05de150c305005055c7ad784a9ce"
   integrity sha512-Ys+/St+2VF4+xuY6+kDIXGxbNRO0mesVg0bbxEfB97Od1Vjpjx9KD1qxs64Gcb3CWPirk9Xe+PT4YiiHQ9T+eg==
 
+"@types/multer@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@types/multer/-/multer-1.4.8.tgz#8d98c36f6a4e0b228a9f262cd66e881d7cd64039"
+  integrity sha512-VMZOW6mnmMMhA5m3fsCdXBwFwC+a+27/8gctNMuQC4f7UtWcF79KAFGoIfKZ4iqrElgWIa3j5vhMJDp0iikQ1g==
+  dependencies:
+    "@types/express" "*"
+
 "@types/node@*", "@types/node@^20.3.1":
   version "20.8.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.8.0.tgz#10ddf0119cf20028781c06d7115562934e53f745"
@@ -1746,6 +1753,11 @@ buffer-from@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5"
   integrity sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==
 
+buffer-to-stream@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/buffer-to-stream/-/buffer-to-stream-1.0.0.tgz#64ae615303fdce9446c8a1ea50239e178a5b49ed"
+  integrity sha512-EMiRQgNY0mFGbPm7zV3b7vc1mSNs7WSkZvH2Rmvl2tjTe43uCuRlCVw1OAEon7NXBTT7He1Pf2lLoKKgvcAujA==
+
 buffer@^5.5.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.7.1.tgz#ba62e7c13133053582197160851a8f648e99eed0"
@@ -1917,6 +1929,21 @@ clone@^1.0.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==
 
+cloudinary-core@^2.13.0:
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/cloudinary-core/-/cloudinary-core-2.13.0.tgz#b59f90871b6c708c3d0735b9be47ac08181c57fb"
+  integrity sha512-Nt0Q5I2FtenmJghtC4YZ3MZZbGg1wLm84SsxcuVwZ83OyJqG9CNIGp86CiI6iDv3QobaqBUpOT7vg+HqY5HxEA==
+
+cloudinary@^1.41.0:
+  version "1.41.0"
+  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.41.0.tgz#f9ac2653222ed8fb52d4b3d78ddcf7b5556f8c70"
+  integrity sha512-qFf2McjvILJITePf4VF1PrY/8c2zy+/q5FVV6V3VWrP/gpIZsusPqXL4QZ6ZKXibPRukzMYqsQEhaSQgJHKKow==
+  dependencies:
+    cloudinary-core "^2.13.0"
+    core-js "^3.30.1"
+    lodash "^4.17.21"
+    q "^1.5.1"
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -2063,6 +2090,11 @@ cookiejar@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.4.tgz#ee669c1fea2cf42dc31585469d193fef0d65771b"
   integrity sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==
+
+core-js@^3.30.1:
+  version "3.33.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.33.0.tgz#70366dbf737134761edb017990cf5ce6c6369c40"
+  integrity sha512-HoZr92+ZjFEKar5HS6MC776gYslNOKHt75mEBKWKnPeFDpZ6nH5OeF3S6HFT1mUAUZKrzkez05VboaX8myjSuw==
 
 core-util-is@^1.0.3, core-util-is@~1.0.0:
   version "1.0.3"
@@ -4513,6 +4545,11 @@ pure-rand@^6.0.0:
   resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-6.0.4.tgz#50b737f6a925468679bff00ad20eade53f37d5c7"
   integrity sha512-LA0Y9kxMYv47GIPJy6MI84fqTd2HmYZI83W/kM/SkKfDlajnZYfmXFTxkbY+xSBPkLJxltMa9hIkmdc29eguMA==
 
+q@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
+  integrity sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==
+
 qs@6.11.0:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
@@ -4903,6 +4940,11 @@ statuses@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-2.0.1.tgz#55cb000ccf1d48728bd23c685a063998cf1a1b63"
   integrity sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==
+
+streamifier@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/streamifier/-/streamifier-0.1.1.tgz#97e98d8fa4d105d62a2691d1dc07e820db8dfc4f"
+  integrity sha512-zDgl+muIlWzXNsXeyUfOk9dChMjlpkq0DRsxujtYPgyJ676yQ8jEm6zzaaWHFDg5BNcLuif0eD2MTyJdZqXpdg==
 
 streamsearch@^1.1.0:
   version "1.1.0"

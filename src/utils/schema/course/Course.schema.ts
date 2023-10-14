@@ -1,7 +1,6 @@
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Chapter, ChapterDocument } from './chapterCourse.schema';
-import { PromiseCourse, PromiseCourseDocument } from './promise.schema';
 
 export type CourseDocument = HydratedDocument<Course>;
 
@@ -16,13 +15,19 @@ export class Course {
   @Prop({ default: 0 })
   view: number;
 
-  @Prop()
-  thumbnail: string;
+  @Prop(
+    raw({
+      publicId: { type: String, default: '' },
+      path: { type: String, default: '' },
+    }),
+  )
+  thumbnail: {
+    publicId: { type: String; default: '' };
+    path: { type: String; default: '' };
+  };
 
-  @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: PromiseCourse.name }],
-  })
-  promise: PromiseCourseDocument[];
+  @Prop()
+  promise: Array<string>;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Chapter.name }] })
   chapter: ChapterDocument[];

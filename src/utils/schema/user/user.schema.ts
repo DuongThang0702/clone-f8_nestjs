@@ -1,5 +1,5 @@
 import mongoose, { HydratedDocument } from 'mongoose';
-import { UserRole } from '../contants';
+import { UserRole } from '../../contants';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { InfoUser, InfoUserDocument } from './inforUser.schema';
 

@@ -1,4 +1,4 @@
-import { User, UserDocument } from 'src/utils/schema/user.schema';
+import { User, UserDocument } from 'src/utils/schema/user/user.schema';
 import { UserDetail } from 'src/utils/types';
 
 export interface IUserService {
