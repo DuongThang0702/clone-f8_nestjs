@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { UserRole } from 'src/utils/contants';
 
 export class CurrentDto {
   @Expose()
@@ -21,4 +22,18 @@ export class CurrentDto {
 
   @Expose()
   role: string;
+}
+
+export class AccessTokenDto {
+  @Expose()
+  email: string;
+
+  @Expose()
+  fullname: string;
+
+  @Expose()
+  role: UserRole;
+
+  @Expose()
+  _id: string;
 }

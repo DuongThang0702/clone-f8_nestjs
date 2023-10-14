@@ -5,6 +5,7 @@ import { Services } from 'src/utils/contants';
 import { IUserService } from 'src/user/interface';
 import { compareSomething, hashSomthing } from 'src/utils/helper';
 import { JwtService } from '@nestjs/jwt';
+import { UserDocument } from 'src/utils/schema';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -30,10 +31,11 @@ export class AuthService implements IAuthService {
       }
     }
   }
+
   async login(
     payload: UserLogin,
   ): Promise<{ access_token: string; refresh_token: string }> {
-    const user = await this.userServices.findOneBy({
+    const user: UserDocument = await this.userServices.findOneBy({
       email: payload.email,
     });
     const checkPassword = await compareSomething(
@@ -42,8 +44,7 @@ export class AuthService implements IAuthService {
     );
     if (!checkPassword)
       throw new HttpException('wrong password', HttpStatus.BAD_REQUEST);
-
-    const { password, is_blocked, refresh_token, ...other } = user;
+    const { password, is_blocked, refresh_token, ...other } = user.toObject();
     const accessToken = await this.generateAccessToken(other);
     const refreshToken = await this.generateRefreshToken({ id: other._id });
     await this.userServices.update(user, await hashSomthing(refreshToken));
@@ -54,20 +55,13 @@ export class AuthService implements IAuthService {
   }
 
   async logout(userDecode: AuthenticatedDecode, refresh_token: string) {
-    const user = await this.userServices.findById(userDecode._id);
-    if (!user)
-      throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
-    else {
-      const matchRf = await compareSomething(refresh_token, user.refresh_token);
-      if (matchRf) {
-        await this.userServices.update(user, '');
-        return true;
-      } else
-        throw new HttpException(
-          'invalid refresh_token',
-          HttpStatus.BAD_REQUEST,
-        );
-    }
+    const user = await this.userServices.findOneBy({ _id: userDecode._id });
+    const matchRf = await compareSomething(refresh_token, user.refresh_token);
+    if (matchRf) {
+      await this.userServices.update(user, '');
+      return true;
+    } else
+      throw new HttpException('invalid refresh_token', HttpStatus.BAD_REQUEST);
   }
 
   async getCurrent(userDecode: AuthenticatedDecode) {
