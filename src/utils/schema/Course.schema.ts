@@ -1,6 +1,5 @@
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { InfoCourse, InfoCourseDocument } from './inforCourse.schema';
 import { Chapter, ChapterDocument } from './chapterCourse.schema';
 import { PromiseCourse, PromiseCourseDocument } from './promise.schema';
 
@@ -8,11 +7,14 @@ export type CourseDocument = HydratedDocument<Course>;
 
 @Schema({ timestamps: true })
 export class Course {
-  @Prop({ length: 50 })
+  @Prop({ length: 50, unique: true })
   title: string;
 
   @Prop()
   description: string;
+
+  @Prop({ default: 0 })
+  view: number;
 
   @Prop()
   thumbnail: string;
@@ -24,9 +26,6 @@ export class Course {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Chapter.name }] })
   chapter: ChapterDocument[];
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: InfoCourse.name })
-  info: InfoCourseDocument;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

@@ -1,6 +1,7 @@
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { UserRole } from '../contants';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { InfoUser, InfoUserDocument } from './inforUser.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -11,9 +12,6 @@ export class User {
 
   @Prop()
   password: string;
-
-  @Prop()
-  fullname: string;
 
   @Prop({ default: false })
   is_blocked: boolean;
@@ -27,6 +25,9 @@ export class User {
     default: UserRole.MEMBER,
   })
   role: UserRole;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: InfoUser.name })
+  info: InfoUserDocument;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
