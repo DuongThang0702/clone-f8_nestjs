@@ -22,8 +22,8 @@ export class Course {
     }),
   )
   thumbnail: {
-    publicId: { type: String; default: '' };
-    path: { type: String; default: '' };
+    publicId: string;
+    path: string;
   };
 
   @Prop()

@@ -10,8 +10,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/contants';
-import { ICourseService } from './interface';
-import { CreateCourseDto } from './Dtos';
+import { ICourseService } from '../interfaces';
+import { CreateCourseDto } from '../Dtos';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller(Routes.COURSE)

@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { LessonService } from './lesson/lesson.service';
 
 @Module({
   imports: [
@@ -18,5 +19,6 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     MongooseModule.forRoot(process.env.URL_MONGOOSE),
     CloudinaryModule,
   ],
+  providers: [LessonService],
 })
 export class AppModule {}

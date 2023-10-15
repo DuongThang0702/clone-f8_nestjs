@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryResponse } from './types';
 const streamifier = require('streamifier');
@@ -15,5 +15,11 @@ export class CloudinaryService {
       );
       streamifier.createReadStream(file.buffer).pipe(uploadStream);
     });
+  }
+
+  async deleteImage(public_id: string) {
+    const response = await cloudinary.uploader.destroy(public_id);
+    if (response.error) throw new Error(response.error);
+    return response;
   }
 }

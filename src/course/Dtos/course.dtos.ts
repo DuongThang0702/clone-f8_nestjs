@@ -8,3 +8,9 @@ export class CreateCourseDto {
   @IsNotEmpty()
   promise: Array<string>;
 }
+
+export class UpdateCourseDto {
+  title: string;
+  description: string;
+  promise: Array<string>;
+}
