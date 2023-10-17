@@ -14,7 +14,7 @@ export class Chapter {
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: InfoCourse.name }],
   })
-  infor: InfoCourseDocument;
+  info: InfoCourseDocument;
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);

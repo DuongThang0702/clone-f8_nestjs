@@ -5,9 +5,6 @@ export type InfoCourseDocument = HydratedDocument<InfoCourse>;
 
 @Schema({ timestamps: true })
 export class InfoCourse {
-  @Prop()
-  name: string;
-
   @Prop({ type: Date })
   openingDay: Date;
 

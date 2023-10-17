@@ -8,10 +8,11 @@ import {
   Delete,
   UploadedFile,
   UseInterceptors,
+  Patch,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/contants';
 import { ICourseService } from '../interfaces';
-import { CreateCourseDto } from '../Dtos';
+import { CreateCourseDto, UpdateCourseDto } from '../Dtos';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller(Routes.COURSE)
@@ -23,14 +24,12 @@ export class CourseController {
 
   @Get()
   async GetAll() {
-    const response = await this.courseService.getAll();
-    return response;
+    return await this.courseService.getAll();
   }
 
   @Get(':id')
   async GetOneBy(@Param() param: { id: string }) {
-    const response = await this.courseService.getOneBy(param.id);
-    return response;
+    return await this.courseService.getOneBy(param.id);
   }
 
   @Post()
@@ -42,9 +41,18 @@ export class CourseController {
     return await this.courseService.create(data, file);
   }
 
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('thumbnail'))
+  async UpdateCourse(
+    @Body() data: UpdateCourseDto,
+    @Param() param: { id: string },
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (file) return await this.courseService.patch(param.id, data, file);
+    else return await this.courseService.patch(param.id, data);
+  }
   @Delete(':id')
   async DeleteCourse(@Param() params: { id: string }) {
-    const response = await this.courseService.delete(params.id);
-    return response;
+    return await this.courseService.delete(params.id);
   }
 }

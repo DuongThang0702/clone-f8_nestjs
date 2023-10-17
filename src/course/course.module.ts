@@ -1,12 +1,23 @@
 import { Module } from '@nestjs/common';
-import { CourseController } from './controllers';
-import { CourseService, ChapterService, LessonService } from './services';
+import {
+  CourseController,
+  ChapterController,
+  InfoController,
+} from './controllers';
+import {
+  CourseService,
+  ChapterService,
+  LessonService,
+  InfoService,
+} from './services';
 import { Services } from 'src/utils/contants';
 import {
   Chapter,
   ChapterSchema,
   Course,
   CourseSchema,
+  InfoCourse,
+  InfoCourseSchema,
   Lesson,
   LessonSchema,
 } from 'src/utils/schema';
@@ -20,13 +31,15 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
       { name: Course.name, schema: CourseSchema },
       { name: Chapter.name, schema: ChapterSchema },
       { name: Lesson.name, schema: LessonSchema },
+      { name: InfoCourse.name, schema: InfoCourseSchema },
     ]),
   ],
-  controllers: [CourseController],
+  controllers: [CourseController, ChapterController, InfoController],
   providers: [
     { provide: Services.COURSE_SERVICE, useClass: CourseService },
     { provide: Services.CHAPTER_SERVICE, useClass: ChapterService },
     { provide: Services.LESSON_SERVICE, useClass: LessonService },
+    { provide: Services.INFO_SERVICE, useClass: InfoService },
   ],
 })
 export class CourseModule {}
