@@ -21,7 +21,9 @@ export class ChapterService implements IChapter {
     if (!validateID)
       throw new HttpException('invalid chapter id', HttpStatus.BAD_REQUEST);
     const chapter = await this.chapterModel.findById(ChapterId);
-    return chapter;
+    if (chapter === null)
+      throw new HttpException('chapter not found', HttpStatus.NOT_FOUND);
+    else return chapter;
   }
   async create(
     courseId: string,
