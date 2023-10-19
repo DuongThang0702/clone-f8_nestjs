@@ -2,6 +2,9 @@ export enum Routes {
   USER = 'user',
   AUTH = 'auth',
   COURSE = 'course',
+  LESSON = 'lesson',
+  INFO_COURSE = 'info',
+  CHAPTER = 'chapter',
 }
 
 export enum Services {

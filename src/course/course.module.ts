@@ -3,6 +3,7 @@ import {
   CourseController,
   ChapterController,
   InfoController,
+  LessonController,
 } from './controllers';
 import {
   CourseService,
@@ -34,7 +35,12 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
       { name: InfoCourse.name, schema: InfoCourseSchema },
     ]),
   ],
-  controllers: [CourseController, ChapterController, InfoController],
+  controllers: [
+    CourseController,
+    ChapterController,
+    InfoController,
+    LessonController,
+  ],
   providers: [
     { provide: Services.COURSE_SERVICE, useClass: CourseService },
     { provide: Services.CHAPTER_SERVICE, useClass: ChapterService },

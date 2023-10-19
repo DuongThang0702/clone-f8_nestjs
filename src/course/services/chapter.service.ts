@@ -1,8 +1,14 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Chapter, ChapterDocument, Course } from 'src/utils/schema';
-import { IChapter, IInfoCourse } from '../interfaces';
+import { IChapter, IInfoCourse, ILesson } from '../interfaces';
 import { Services } from 'src/utils/contants';
 import { CreateChapterDto, UpdateChapterDto } from '../Dtos';
 
@@ -12,6 +18,8 @@ export class ChapterService implements IChapter {
     @InjectModel(Chapter.name) private readonly chapterModel: Model<Chapter>,
     @InjectModel(Course.name) private readonly CourseModel: Model<Course>,
     @Inject(Services.INFO_SERVICE) private readonly infoService: IInfoCourse,
+    @Inject(forwardRef(() => Services.LESSON_SERVICE))
+    private readonly lessonService: ILesson,
   ) {}
   async getAll(): Promise<ChapterDocument[]> {
     return await this.chapterModel.find();
@@ -32,9 +40,6 @@ export class ChapterService implements IChapter {
     const validateId = Types.ObjectId.isValid(courseId);
     if (!validateId)
       throw new HttpException('invalid courseId', HttpStatus.BAD_REQUEST);
-    const course = await this.CourseModel.findById(courseId);
-    if (course === null)
-      throw new HttpException('course not found', HttpStatus.BAD_REQUEST);
     const info = await this.infoService.create(data.info);
     const chapter = new this.chapterModel({
       info: info._id,
@@ -43,7 +48,9 @@ export class ChapterService implements IChapter {
     const result: ChapterDocument = await chapter.save();
     if (result === null)
       throw new HttpException('something went wrong!', HttpStatus.BAD_REQUEST);
-    await course.updateOne({}, { $push: { chapter: result._id } });
+    await this.CourseModel.findByIdAndUpdate(courseId, {
+      $push: { chapter: result._id },
+    });
     return result;
   }
   async update(id: string, data: UpdateChapterDto): Promise<ChapterDocument> {
@@ -69,6 +76,13 @@ export class ChapterService implements IChapter {
       throw new HttpException('chapter id not found', HttpStatus.NOT_FOUND);
     else {
       await this.infoService.delete(chapter.info.toString());
+      chapter.lesson.map(
+        async (el) =>
+          await this.lessonService.delete(
+            el._id.toString(),
+            chapter._id.toString(),
+          ),
+      );
       const response = await chapter.deleteOne();
       return response;
     }
