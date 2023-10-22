@@ -4,8 +4,8 @@ import { UserDetail } from 'src/utils/types';
 export interface IUserService {
   find(): Promise<UserDocument[]>;
   findById(id: string): Promise<UserDocument>;
-  update(payload: UserDocument, refresh_token: string): Promise<UserDocument>;
-  create(payload: UserDetail): Promise<User>;
+  update(payload: UserDocument, newdata: object): Promise<UserDocument>;
+  create(payload: UserDetail): Promise<UserDocument>;
   delete(id: string): Promise<boolean>;
   findOneBy(data: object): Promise<UserDocument>;
 }

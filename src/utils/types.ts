@@ -1,7 +1,7 @@
 export type UserDetail = {
   email: string;
   password: string;
-  fullname: string;
+  role?: string;
 };
 
 export type UserLogin = {

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User, UserDocument } from 'src/utils/schema/';
-import { IUserService } from './interface';
+import { IUserService } from '../interface';
 import { UserDetail } from 'src/utils/types';
 import { hashSomthing } from 'src/utils/helper';
 import { Model } from 'mongoose';
@@ -23,23 +23,22 @@ export class UserService implements IUserService {
   }
 
   async findOneBy(data: object): Promise<UserDocument> {
-    const user = await this.userModel.findOne({ ...data });
+    const user = await this.userModel.findOne({ ...data }).populate('info');
     if (user) return user;
     else throw new HttpException('email not found', HttpStatus.BAD_REQUEST);
   }
 
-  async update(
-    userData: UserDocument,
-    refresh_token: string,
-  ): Promise<UserDocument> {
-    userData.refresh_token = refresh_token;
-    return await this.userModel.findByIdAndUpdate(
+  async update(userData: UserDocument, newdata: object): Promise<UserDocument> {
+    const response = await this.userModel.findByIdAndUpdate(
       { _id: userData._id },
-      { refresh_token },
+      { ...newdata },
     );
+    if (response === null)
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    else return response;
   }
 
-  async create(payload: UserDetail): Promise<User> {
+  async create(payload: UserDetail): Promise<UserDocument> {
     const existingUser = await this.userModel.findOne({
       email: payload.email,
     });
@@ -50,8 +49,10 @@ export class UserService implements IUserService {
     return newUser.save();
   }
 
-  async delete(id: string): Promise<boolean> {
-    const user: boolean = await this.userModel.findByIdAndDelete({ id });
-    return user;
+  async delete(_id: string): Promise<boolean> {
+    const user: boolean = await this.userModel.findByIdAndDelete({ _id });
+    if (user === null)
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    else return user;
   }
 }

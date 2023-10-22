@@ -1,5 +1,6 @@
 export enum Routes {
   USER = 'user',
+  ADMIN_USER = 'admin-user',
   AUTH = 'auth',
   COURSE = 'course',
   LESSON = 'lesson',

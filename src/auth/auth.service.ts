@@ -26,7 +26,7 @@ export class AuthService implements IAuthService {
         throw new HttpException('invalid token', HttpStatus.UNAUTHORIZED);
       else {
         const { password, is_blocked, refresh_token, ...other } = user;
-        const access_token = await this.generateAccessToken(other);
+        const access_token = await this.generateAccessToken(user);
         return { access_token };
       }
     }
@@ -45,9 +45,11 @@ export class AuthService implements IAuthService {
     if (!checkPassword)
       throw new HttpException('wrong password', HttpStatus.BAD_REQUEST);
     const { password, is_blocked, refresh_token, ...other } = user.toObject();
-    const accessToken = await this.generateAccessToken(other);
+    const accessToken = await this.generateAccessToken(user);
     const refreshToken = await this.generateRefreshToken({ id: other._id });
-    await this.userServices.update(user, await hashSomthing(refreshToken));
+    await this.userServices.update(user, {
+      refresh_token: await hashSomthing(refreshToken),
+    });
     return {
       access_token: `Bearer ${accessToken}`,
       refresh_token: refreshToken,
@@ -58,7 +60,7 @@ export class AuthService implements IAuthService {
     const user = await this.userServices.findOneBy({ _id: userDecode._id });
     const matchRf = await compareSomething(refresh_token, user.refresh_token);
     if (matchRf) {
-      await this.userServices.update(user, '');
+      await this.userServices.update(user, { refresh_token: '' });
       return true;
     } else
       throw new HttpException('invalid refresh_token', HttpStatus.BAD_REQUEST);
@@ -71,9 +73,9 @@ export class AuthService implements IAuthService {
     else return user;
   }
 
-  async generateAccessToken(data: object): Promise<string> {
+  async generateAccessToken(data: UserDocument): Promise<string> {
     return await this.jwtService.signAsync(
-      { ...data },
+      { _id: data._id, email: data.email, role: data.role },
       {
         expiresIn: process.env.EXPIRESIN_ACCESSTOKEN,
         secret: process.env.KEY_ACCESSTOKEN,

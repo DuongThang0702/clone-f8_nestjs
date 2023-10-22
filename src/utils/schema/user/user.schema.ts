@@ -1,13 +1,12 @@
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import { UserRole } from '../../contants';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { InfoUser, InfoUserDocument } from './inforUser.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({ length: 50 })
+  @Prop({ length: 50, unique: true })
   email: string;
 
   @Prop()
@@ -26,8 +25,26 @@ export class User {
   })
   role: UserRole;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: InfoUser.name })
-  info: InfoUserDocument;
+  @Prop({ type: Date, default: '' })
+  dateOfBirth: Date;
+
+  @Prop({ maxlength: 10, minlength: 10, default: '' })
+  phoneNumber: number;
+
+  @Prop({ default: '' })
+  sex: string;
+
+  @Prop({ default: '' })
+  studyTime: Date;
+
+  @Prop({ default: '' })
+  fullname: string;
+
+  @Prop({ default: '' })
+  graduatedFromSchool: string;
+
+  @Prop({ default: '' })
+  major: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

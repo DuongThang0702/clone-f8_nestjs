@@ -11,10 +11,6 @@ export class RegisterDto {
   @MaxLength(30)
   @MinLength(6)
   password: string;
-
-  @Expose()
-  @IsNotEmpty()
-  fullname: string;
 }
 
 export class RegisterSuccess {

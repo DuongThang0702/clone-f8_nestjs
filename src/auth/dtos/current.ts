@@ -1,6 +1,23 @@
 import { Exclude, Expose } from 'class-transformer';
 import { UserRole } from 'src/utils/contants';
 
+export class infoUserDto {
+  @Expose()
+  dateOfBirth: Date;
+  @Expose()
+  phoneNumber: number;
+  @Expose()
+  sex: string;
+  @Expose()
+  studyTime: Date;
+  @Expose()
+  fullname: string;
+  @Expose()
+  graduatedFromSchool: string;
+  @Expose()
+  major: string;
+}
+
 export class CurrentDto {
   @Expose()
   id: string;
@@ -12,9 +29,6 @@ export class CurrentDto {
   password: string;
 
   @Expose()
-  fullname: string;
-
-  @Expose()
   is_blocked: boolean;
 
   @Exclude()
@@ -22,6 +36,9 @@ export class CurrentDto {
 
   @Expose()
   role: string;
+
+  @Expose()
+  info?: infoUserDto;
 }
 
 export class AccessTokenDto {
