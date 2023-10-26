@@ -8,7 +8,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Chapter, ChapterDocument, Course } from 'src/utils/schema';
-import { IChapter, IInfoCourse, ILesson } from '../interfaces';
+import { IChapter, ILesson } from '../interfaces';
 import { Services } from 'src/utils/contants';
 import { CreateChapterDto, UpdateChapterDto } from '../Dtos';
 
@@ -17,7 +17,6 @@ export class ChapterService implements IChapter {
   constructor(
     @InjectModel(Chapter.name) private readonly chapterModel: Model<Chapter>,
     @InjectModel(Course.name) private readonly CourseModel: Model<Course>,
-    @Inject(Services.INFO_SERVICE) private readonly infoService: IInfoCourse,
     @Inject(forwardRef(() => Services.LESSON_SERVICE))
     private readonly lessonService: ILesson,
   ) {}
@@ -40,9 +39,7 @@ export class ChapterService implements IChapter {
     const validateId = Types.ObjectId.isValid(courseId);
     if (!validateId)
       throw new HttpException('invalid courseId', HttpStatus.BAD_REQUEST);
-    const info = await this.infoService.create(data.info);
     const chapter = new this.chapterModel({
-      info: info._id,
       title: data.title,
     });
     const result: ChapterDocument = await chapter.save();
@@ -75,7 +72,6 @@ export class ChapterService implements IChapter {
     if (!chapter)
       throw new HttpException('chapter id not found', HttpStatus.NOT_FOUND);
     else {
-      await this.infoService.delete(chapter.info.toString());
       chapter.lesson.map(
         async (el) =>
           await this.lessonService.delete(

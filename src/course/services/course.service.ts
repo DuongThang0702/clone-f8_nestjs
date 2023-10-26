@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Course, CourseDocument } from 'src/utils/schema';
-import { IChapter, ICourseService } from '../interfaces';
+import { IChapter, ICourseService, IInfoCourse } from '../interfaces';
 import { CreateCourseDto, UpdateCourseDto } from '../Dtos';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { Services } from 'src/utils/contants';
@@ -13,6 +13,7 @@ export class CourseService implements ICourseService {
   constructor(
     @InjectModel(Course.name) private readonly courseModel: Model<Course>,
     @Inject(Services.CHAPTER_SERVICE) private readonly chapterService: IChapter,
+    @Inject(Services.INFO_SERVICE) private readonly infoService: IInfoCourse,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
   async getAll(req: TQueryGetAll): Promise<{
@@ -89,24 +90,35 @@ export class CourseService implements ICourseService {
       title: data.title,
     });
     const updaloadimage = await this.cloudinaryService.uploadFile(file);
+    const promise = data.promise.split(',');
 
     if (matchingCourse && file) {
       await this.cloudinaryService.deleteImage(updaloadimage.public_id);
       throw new HttpException('title has been exsited', HttpStatus.BAD_REQUEST);
     }
+    const { area, duration, openingDay, schedule, slot } = data;
+    const info = await this.infoService.create({
+      area,
+      duration,
+      openingDay,
+      schedule,
+      slot,
+    });
     const course = new this.courseModel({
+      info: info,
       title: data.title,
       description: data.description,
-      promise: data.promise,
+      promise: promise,
       thumbnail: {
         publicId: updaloadimage.public_id,
         path: updaloadimage.url,
       },
     });
+
     const response = await course.save();
     if (response === null) {
       await this.cloudinaryService.deleteImage(updaloadimage.public_id);
-      throw new HttpException('title has been exsited', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Something went wrong', HttpStatus.BAD_REQUEST);
     }
     return response;
   }
@@ -159,6 +171,7 @@ export class CourseService implements ICourseService {
     course.chapter.map(
       async (el) => await this.chapterService.delete(el.toString()),
     );
+    await this.infoService.delete(course.info.toString());
     const result = await course.deleteOne();
     return result;
   }
