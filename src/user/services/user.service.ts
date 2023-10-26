@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User, UserDocument } from 'src/utils/schema/';
 import { IUserService } from '../interface';
-import { UserDetail } from 'src/utils/types';
+import { TQueryGetAll, UserDetail } from 'src/utils/types';
 import { hashSomthing } from 'src/utils/helper';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,8 +12,35 @@ export class UserService implements IUserService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  async find(): Promise<UserDocument[]> {
-    return await this.userModel.find();
+  async find(req: TQueryGetAll): Promise<{
+    counts: number;
+    users: UserDocument[];
+  }> {
+    const queryCommand = this.userModel.find({});
+
+    //Sorting
+    if (req?.sort) {
+      const sortBy = req.sort.split(',').join(' ');
+      queryCommand.sort(sortBy);
+    }
+
+    const page = parseInt(req.page) || 1;
+    const limit = parseInt(req.limit) || parseInt(process.env.LIMIT);
+    const skip = (page - 1) * limit;
+    queryCommand.limit(limit).skip(skip);
+
+    return queryCommand
+      .exec()
+      .then(async (rs) => {
+        const counts = await this.userModel.find().countDocuments();
+        return {
+          counts: counts,
+          users: rs,
+        };
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
   }
 
   async findById(_id: string): Promise<UserDocument> {
@@ -23,7 +50,7 @@ export class UserService implements IUserService {
   }
 
   async findOneBy(data: object): Promise<UserDocument> {
-    const user = await this.userModel.findOne({ ...data }).populate('info');
+    const user = await this.userModel.findOne({ ...data });
     if (user) return user;
     else throw new HttpException('email not found', HttpStatus.BAD_REQUEST);
   }

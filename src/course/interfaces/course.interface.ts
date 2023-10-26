@@ -1,8 +1,12 @@
 import { CourseDocument } from 'src/utils/schema';
 import { CreateCourseDto, UpdateCourseDto } from '../Dtos/course.dtos';
+import { TQueryGetAll } from 'src/utils/types';
 
 export interface ICourseService {
-  getAll(): Promise<CourseDocument[]>;
+  getAll(req: TQueryGetAll): Promise<{
+    courses: CourseDocument[];
+    counts: number;
+  }>;
   getOneBy(courseId: string): Promise<CourseDocument>;
   create(
     data: CreateCourseDto,

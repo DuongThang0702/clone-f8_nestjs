@@ -6,6 +6,7 @@ import { IChapter, ICourseService } from '../interfaces';
 import { CreateCourseDto, UpdateCourseDto } from '../Dtos';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { Services } from 'src/utils/contants';
+import { TQueryGetAll } from 'src/utils/types';
 
 @Injectable()
 export class CourseService implements ICourseService {
@@ -14,10 +15,63 @@ export class CourseService implements ICourseService {
     @Inject(Services.CHAPTER_SERVICE) private readonly chapterService: IChapter,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
-  async getAll(): Promise<CourseDocument[]> {
-    const courses = await this.courseModel.find();
-    return courses;
+  async getAll(req: TQueryGetAll): Promise<{
+    courses: CourseDocument[];
+    counts: number;
+  }> {
+    const queries = { ...req };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queries[el]);
+
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(
+      /\b(gte|gt|lte|lt)\b/g,
+      (match) => `$${match}`,
+    );
+
+    const formatedQueries = JSON.parse(queryString);
+    let queryObject = {};
+
+    //Filtering
+    if (queries?.title)
+      formatedQueries.title = { $regex: queries.title, $options: 'i' };
+
+    const queryCommand = this.courseModel.find({
+      ...formatedQueries,
+      ...queryObject,
+    });
+
+    //Sorting
+    if (req?.sort) {
+      const sortBy = req.sort.split(',').join(' ');
+      queryCommand.sort(sortBy);
+    }
+
+    //pagination
+    const page = parseInt(req.page) || 1;
+    const limit = parseInt(req.limit) || parseInt(process.env.LIMIT);
+    const skip = (page - 1) * limit;
+    queryCommand.limit(limit).skip(skip);
+
+    return queryCommand
+      .exec()
+      .then(async (rs) => {
+        const counts = await this.courseModel
+          .find({
+            ...formatedQueries,
+            ...queryObject,
+          })
+          .countDocuments();
+        return {
+          counts: counts,
+          courses: rs,
+        };
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
   }
+
   async getOneBy(courseId: string): Promise<CourseDocument> {
     const validObjectId = Types.ObjectId.isValid(courseId);
     if (!validObjectId)

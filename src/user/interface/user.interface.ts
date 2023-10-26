@@ -1,8 +1,11 @@
 import { User, UserDocument } from 'src/utils/schema/user/user.schema';
-import { UserDetail } from 'src/utils/types';
+import { TQueryGetAll, UserDetail } from 'src/utils/types';
 
 export interface IUserService {
-  find(): Promise<UserDocument[]>;
+  find(req: TQueryGetAll): Promise<{
+    counts: number;
+    users: UserDocument[];
+  }>;
   findById(id: string): Promise<UserDocument>;
   update(payload: UserDocument, newdata: object): Promise<UserDocument>;
   create(payload: UserDetail): Promise<UserDocument>;

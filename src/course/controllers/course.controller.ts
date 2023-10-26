@@ -9,11 +9,13 @@ import {
   UploadedFile,
   UseInterceptors,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/contants';
 import { ICourseService } from '../interfaces';
 import { CreateCourseDto, UpdateCourseDto } from '../Dtos';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { TQueryGetAll } from 'src/utils/types';
 
 @Controller(Routes.COURSE)
 export class CourseController {
@@ -23,8 +25,8 @@ export class CourseController {
   ) {}
 
   @Get()
-  async GetAll() {
-    return await this.courseService.getAll();
+  async GetAll(@Query() req: TQueryGetAll) {
+    return await this.courseService.getAll(req);
   }
 
   @Get(':id')

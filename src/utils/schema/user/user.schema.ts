@@ -45,6 +45,9 @@ export class User {
 
   @Prop({ default: '' })
   major: string;
+
+  @Prop({ default: '' })
+  avatar: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
