@@ -39,12 +39,22 @@ export class ChapterService implements IChapter {
     const validateId = Types.ObjectId.isValid(courseId);
     if (!validateId)
       throw new HttpException('invalid courseId', HttpStatus.BAD_REQUEST);
+    const matchChapter = await this.chapterModel.findOne({ title: data.title });
+    if (matchChapter)
+      throw new HttpException('chapter has been exist', HttpStatus.BAD_REQUEST);
     const chapter = new this.chapterModel({
       title: data.title,
     });
     const result: ChapterDocument = await chapter.save();
     if (result === null)
       throw new HttpException('something went wrong!', HttpStatus.BAD_REQUEST);
+
+    if (data.lesson) {
+      data.lesson.map(async (rs) => {
+        await this.lessonService.create(result, { title: rs });
+      });
+    }
+
     await this.CourseModel.findByIdAndUpdate(courseId, {
       $push: { chapter: result._id },
     });

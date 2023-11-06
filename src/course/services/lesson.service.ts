@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import {
   LessonDocument,
   Lesson,
@@ -27,9 +27,10 @@ export class LessonService implements ILesson {
       throw new HttpException('lesson not found', HttpStatus.NOT_FOUND);
     else return lesson;
   }
+
   async create(
-    chapterId: string,
-    data: CreateLessonDto,
+    chapterId: ChapterDocument,
+    data: { title: string },
   ): Promise<LessonDocument> {
     const exsitedLesson = await this.lessonModel.findOne({ title: data.title });
     if (exsitedLesson)
@@ -38,7 +39,7 @@ export class LessonService implements ILesson {
     const response = await newLesson.save();
     if (response === null)
       throw new HttpException('Something went wrong', HttpStatus.BAD_REQUEST);
-    await this.chapterModel.findByIdAndUpdate(chapterId, {
+    await chapterId.updateOne({
       $push: { lesson: response },
     });
     return response;

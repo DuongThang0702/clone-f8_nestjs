@@ -28,13 +28,13 @@ export class LessonController {
     return await this.lessonService.getOneById(param.lessonId);
   }
 
-  @Post(':chapterId')
-  async CreateLesson(
-    @Body() data: CreateLessonDto,
-    @Param() param: { chapterId: string },
-  ) {
-    return await this.lessonService.create(param.chapterId, data);
-  }
+  // @Post(':chapterId')
+  // async CreateLesson(
+  //   @Body() data: CreateLessonDto,
+  //   @Param() param: { chapterId: string },
+  // ) {
+  //   return await this.lessonService.create(param.chapterId, data);
+  // }
 
   @Patch(':lessonId')
   async UpdateLesson(
@@ -44,8 +44,8 @@ export class LessonController {
     return await this.lessonService.update(params.lessonId, data);
   }
 
-  //   @Delete(':lessonId')
-  //   async DeleteInfo(@Param() param: { lessonId: string }) {
-  //     return await this.lessonService.delete(param.lessonId);
-  //   }
+  // @Delete(':lessonId')
+  // async DeleteInfo(@Param() param: { lessonId: string }) {
+  //   return await this.lessonService.delete(param.lessonId);
+  // }
 }

@@ -77,7 +77,15 @@ export class CourseService implements ICourseService {
     const validObjectId = Types.ObjectId.isValid(courseId);
     if (!validObjectId)
       throw new HttpException('invalid courseId', HttpStatus.BAD_REQUEST);
-    const course = await this.courseModel.findById(courseId);
+    const course = await this.courseModel
+      .findById(courseId)
+      .populate('info')
+      .populate({
+        path: 'chapter',
+        populate: {
+          path: 'lesson',
+        },
+      });
     if (course === null)
       throw new HttpException('course not found', HttpStatus.NOT_FOUND);
     else return course;
@@ -131,16 +139,26 @@ export class CourseService implements ICourseService {
     const matchingCourseId = Types.ObjectId.isValid(courseId);
     if (!matchingCourseId)
       throw new HttpException('invalid course id', HttpStatus.BAD_REQUEST);
+    const promise = data.promise.split(',');
+    const { area, duration, openingDay, schedule, slot } = data;
     if (file) {
       const course = await this.courseModel.findById(courseId);
       if (course === null)
         throw new HttpException('courseId not found', HttpStatus.NOT_FOUND);
+      await this.infoService.update(course.info.toString(), {
+        area,
+        duration,
+        openingDay,
+        schedule,
+        slot,
+      });
       await this.cloudinaryService.deleteImage(course.thumbnail.publicId);
       const updaloadimage = await this.cloudinaryService.uploadFile(file);
       course.thumbnail = {
         path: updaloadimage.url,
         publicId: updaloadimage.public_id,
       };
+      course.promise = promise;
       const response = await course.updateOne();
       if (response === null)
         throw new HttpException(
@@ -151,9 +169,16 @@ export class CourseService implements ICourseService {
     } else {
       const course = await this.courseModel.findByIdAndUpdate(
         courseId,
-        { ...data },
+        { ...data, promise },
         { new: true },
       );
+      await this.infoService.update(course.info.toString(), {
+        area,
+        duration,
+        openingDay,
+        schedule,
+        slot,
+      });
       if (course === null)
         throw new HttpException('Course id not found', HttpStatus.NOT_FOUND);
       return course;

@@ -23,5 +23,11 @@ export class CreateCourseDto {
 export class UpdateCourseDto {
   title: string;
   description: string;
-  promise: Array<string>;
+  promise: string;
+
+  openingDay: Date;
+  area: string;
+  schedule: string;
+  duration: string;
+  slot: number;
 }

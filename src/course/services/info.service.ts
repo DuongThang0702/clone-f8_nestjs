@@ -29,18 +29,12 @@ export class InfoService implements IInfoCourse {
       throw new HttpException('not found', HttpStatus.NOT_FOUND);
     else return info;
   }
-  async update(
-    infoId: string,
-    data: UpdateInfoDto,
-  ): Promise<InfoCourseDocument> {
+  async update(infoId: string, data: object): Promise<InfoCourseDocument> {
     const validateID = Types.ObjectId.isValid(infoId);
     if (!validateID)
       throw new HttpException('invalid info id', HttpStatus.BAD_REQUEST);
-    const result = await this.infoModel.findByIdAndUpdate(
-      infoId,
-      { ...data },
-      { new: true },
-    );
+
+    const result = await this.infoModel.findByIdAndUpdate(infoId, { ...data });
     if (result === null)
       throw new HttpException('info not found', HttpStatus.NOT_FOUND);
     else return result;

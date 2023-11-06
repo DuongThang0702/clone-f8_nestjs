@@ -5,6 +5,7 @@ import { TQueryGetAll, UserDetail } from 'src/utils/types';
 import { hashSomthing } from 'src/utils/helper';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { UserRole } from 'src/utils/contants';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -16,7 +17,7 @@ export class UserService implements IUserService {
     counts: number;
     users: UserDocument[];
   }> {
-    const queryCommand = this.userModel.find({});
+    const queryCommand = this.userModel.find({ role: UserRole.MEMBER });
 
     //Sorting
     if (req?.sort) {
@@ -32,7 +33,9 @@ export class UserService implements IUserService {
     return queryCommand
       .exec()
       .then(async (rs) => {
-        const counts = await this.userModel.find().countDocuments();
+        const counts = await this.userModel
+          .find({ role: UserRole.MEMBER })
+          .countDocuments();
         return {
           counts: counts,
           users: rs,
