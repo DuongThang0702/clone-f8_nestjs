@@ -4,9 +4,11 @@ export class CreateUserByAdminDto {
   @IsNotEmpty()
   email: string;
   @IsNotEmpty()
-  password: string;
-  @IsNotEmpty()
   fullname: string;
   @IsNotEmpty()
   role: string;
+  @IsNotEmpty()
+  phoneNumber: number;
+  @IsNotEmpty()
+  dateOfBirth: Date;
 }

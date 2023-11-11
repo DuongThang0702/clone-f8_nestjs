@@ -27,3 +27,11 @@ export type TQueryGetAll = {
   limit: string;
   fields: string;
 };
+
+export type CreateUserByAdmin = {
+  email: string;
+  fullname: string;
+  role: string;
+  phoneNumber: number;
+  dateOfBirth: Date;
+};

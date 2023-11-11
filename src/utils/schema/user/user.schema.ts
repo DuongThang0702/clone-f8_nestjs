@@ -25,28 +25,28 @@ export class User {
   })
   role: UserRole;
 
-  @Prop({ type: Date, default: '' })
+  @Prop({ type: Date })
   dateOfBirth: Date;
 
-  @Prop({ maxlength: 10, minlength: 10, default: '' })
+  @Prop({ maxlength: 10, minlength: 10 })
   phoneNumber: number;
 
-  @Prop({ default: '' })
+  @Prop()
   sex: string;
 
-  @Prop({ default: '' })
+  @Prop()
   studyTime: Date;
 
-  @Prop({ default: '' })
+  @Prop()
   fullname: string;
 
-  @Prop({ default: '' })
+  @Prop()
   graduatedFromSchool: string;
 
-  @Prop({ default: '' })
+  @Prop()
   major: string;
 
-  @Prop({ default: '' })
+  @Prop()
   avatar: string;
 }
 

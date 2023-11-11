@@ -42,6 +42,12 @@ export class CourseService implements ICourseService {
       ...queryObject,
     });
 
+    //fields
+    if (req?.fields) {
+      const fields = req.fields.split(',').join(' ');
+      queryCommand.select(fields);
+    }
+
     //Sorting
     if (req?.sort) {
       const sortBy = req.sort.split(',').join(' ');
@@ -52,7 +58,7 @@ export class CourseService implements ICourseService {
     const page = parseInt(req.page) || 1;
     const limit = parseInt(req.limit) || parseInt(process.env.LIMIT);
     const skip = (page - 1) * limit;
-    queryCommand.limit(limit).skip(skip);
+    queryCommand.limit(limit).skip(skip).populate('info');
 
     return queryCommand
       .exec()
@@ -119,7 +125,7 @@ export class CourseService implements ICourseService {
       promise: promise,
       thumbnail: {
         publicId: updaloadimage.public_id,
-        path: updaloadimage.url,
+        path: updaloadimage.secure_url,
       },
     });
 

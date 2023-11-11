@@ -6,11 +6,14 @@ export class RegisterDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
-
   @IsNotEmpty()
-  @MaxLength(30)
-  @MinLength(6)
-  password: string;
+  fullname: string;
+  @IsNotEmpty()
+  role: string;
+  @IsNotEmpty()
+  phoneNumber: number;
+  @IsNotEmpty()
+  dateOfBirth: Date;
 }
 
 export class RegisterSuccess {

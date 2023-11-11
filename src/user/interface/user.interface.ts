@@ -1,5 +1,5 @@
 import { User, UserDocument } from 'src/utils/schema/user/user.schema';
-import { TQueryGetAll, UserDetail } from 'src/utils/types';
+import { CreateUserByAdmin, TQueryGetAll, UserDetail } from 'src/utils/types';
 
 export interface IUserService {
   find(req: TQueryGetAll): Promise<{
@@ -8,7 +8,7 @@ export interface IUserService {
   }>;
   findById(id: string): Promise<UserDocument>;
   update(payload: UserDocument, newdata: object): Promise<UserDocument>;
-  create(payload: UserDetail): Promise<UserDocument>;
+  create(payload: CreateUserByAdmin): Promise<UserDocument>;
   delete(id: string): Promise<boolean>;
   findOneBy(data: object): Promise<UserDocument>;
 }

@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User, UserDocument } from 'src/utils/schema/';
 import { IUserService } from '../interface';
-import { TQueryGetAll, UserDetail } from 'src/utils/types';
+import { CreateUserByAdmin, TQueryGetAll, UserDetail } from 'src/utils/types';
 import { hashSomthing } from 'src/utils/helper';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserRole } from 'src/utils/contants';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -68,14 +69,13 @@ export class UserService implements IUserService {
     else return response;
   }
 
-  async create(payload: UserDetail): Promise<UserDocument> {
+  async create(payload: CreateUserByAdmin): Promise<UserDocument> {
     const existingUser = await this.userModel.findOne({
       email: payload.email,
     });
     if (existingUser)
       throw new HttpException('user already existed', HttpStatus.BAD_REQUEST);
-    const password = await hashSomthing(payload.password);
-    const newUser = new this.userModel({ ...payload, password: password });
+    const newUser = new this.userModel({ ...payload, password: uuidv4() });
     return newUser.save();
   }
 
